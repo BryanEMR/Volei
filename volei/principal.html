@@ -1,0 +1,123 @@
+<html dir="ltr" lang="pt-br" xml:lang="pt-br">
+
+<script language="javascript" type="text/javascript" src="classe.js"></script>
+<link href="estilo.css" rel="stylesheet">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Trabalho Volei</title>
+</head>
+
+<body>
+    <h1>Volei</h1>
+    <canvas id="canvas" width="320px" height="240px"></canvas> <br>
+    <button onclick="removerPontos()" style="width:320px" >Resetar Pontos</button><br>
+    <h3>Instrucoes</h3>
+    <p><b>A</b> => Para mover para Esquerda</p>
+    <p><b>D</b> => Para mover para Direita</p>
+    <p><b>W</b> => Para mover para Pular</p>
+    <p><b>Bater na bola no ar</b> => A bola é mandada para a direção contraria</p>
+    <p><b>Bater na bola no chão</b> => A bola é mandada para a direção que está</p>
+    <p><b>Paredes</b> => As paredes rebatem a bola</p>
+</body>
+</html>
+
+
+<script>//aonde ocorre a magica hahaha. Junção das classes e funções sem classes
+    //canvas inserir Imagens
+    var canvas = document.getElementById('canvas');
+    var ctx = canvas.getContext('2d');
+    ctx.fillStyle = 'white';
+
+    //players
+    var player1 = new player(70, 220);
+    var player2 = new player(240, 220);
+    var bola = new Bola(159, 100);
+
+    updateTela();
+    function updateTela() { //Atualizar a Tela
+        ctx.clearRect(0, 0, 320, 240);
+        //Pontos
+        var pontos1 = verificarPontos1();
+        var pontos2 = verificarPontos2();
+        //obJetos fixos
+        ctx.fillText(pontos1, 290, 20)//pontos1 
+        ctx.fillText(pontos2, 15, 20)//pontos2 
+        ctx.fillRect(159, 200, 2, 40);//rede      
+        //movimento os jogadores
+        player1.junto(1);
+        window.addEventListener("keydown", movimento)
+        player2.ia(bola);
+        player2.junto(2);
+        bola.junto(player1, player2);
+        //repetir o update a cada frame
+        requestAnimationFrame(updateTela);
+    }
+
+
+    function movimento(e) { //Moviementação do player 1
+
+        if (e.keyCode == 65) {//letra A
+            player1.esquerda();
+        }
+        if (e.keyCode == 68) {//letra D
+            player1.direita();
+        }
+        if (e.keyCode == 87) {//letra W
+            if (player1.position.y > 219) {//impede o multiplo pulo
+                player1.pular();
+            }
+
+        }
+
+    }
+
+    function removerPontos(){ //Redetar pontos
+        localStorage . removeItem ( 'pontosA' );
+        localStorage . removeItem ( 'pontosA' );
+    }
+
+    function verificarPontos2(){ //Se for NULL os pontos será igual a 0 o valor da ponuação
+        if(localStorage.getItem("pontosB") == null){
+            return 0;
+        }
+        else{
+            return localStorage.getItem("pontosB");;
+        }
+    }
+    function verificarPontos1(){
+        if(localStorage.getItem("pontosA") == null){
+            return 0;
+        }
+        else{
+            return localStorage.getItem("pontosA");;
+        }
+    }
+
+    
+    function pontosTime1(){ //pontos lado 1
+        
+        if(localStorage.getItem("pontosB") == null){
+            localStorage.setItem("pontosB", 0);
+        }
+        if(localStorage.getItem("pontosB") != null){
+            ponto = localStorage.getItem("pontosB");
+            ponto++;
+            localStorage.setItem("pontosB", ponto);
+        }
+    }
+
+    function pontosTime2(){ //pontos lado 2
+        if(localStorage.getItem("pontosA") == null){
+        localStorage.setItem("pontosA", 0);
+        }
+        if(localStorage.getItem("pontosA") != null){
+            ponto = localStorage.getItem("pontosA");
+            ponto++;
+            localStorage.setItem("pontosA", ponto);
+        }
+        
+}
+</script>
+
+
